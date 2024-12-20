@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .cart-item {
+      margin: 10px 0;
+    }
+    .order-button {
+      margin-top: 20px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Cart</h1>
+  <div id="cart"></div>
+  <button class="order-button" onclick="placeOrder()">Place Order</button>
+
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart'));
+      const cartDiv = document.getElementById('cart');
+      let cartItems = '';
+      let total = 0;
+
+      for (const [item, qty] of Object.entries(cart)) {
+        if (qty > 0) {
+          const price = item === 'Pizza' ? 300 : item === 'Burger' ? 150 : 200;
+          cartItems += `<div class="cart-item">${item} (x${qty}) - ₹${price * qty}</div>`;
+          total += price * qty;
+        }
+      }
+      cartItems += `<div><strong>Total: ₹${total}</strong></div>`;
+      cartDiv.innerHTML = cartItems;
+    }
+
+    function placeOrder() {
+      const cart = JSON.parse(localStorage.getItem('cart'));
+      const restaurantNumber = '917483059862';
+      let message = 'Hi! I would like to order:%0A';
+
+      for (const [item, qty] of Object.entries(cart)) {
+        if (qty > 0) {
+          message += `- ${item}: ${qty}%0A`;
+        }
+      }
+
+      const whatsappURL = `https://wa.me/${restaurantNumber}?text=${message}`;
+      window.open(whatsappURL, '_blank');
+    }
+
+    // Load cart on page load
+    loadCart();
+  </script>
+</body>
+</html>
